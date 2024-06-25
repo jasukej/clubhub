@@ -1,45 +1,55 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../config/firebase";
 
 const TitleScreen = () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        const checkFirstLaunch = async () => {
-            const hasLaunched = await AsyncStorage.getItem('hasLaunched');
-            if (hasLaunched === null) {
-                await AsyncStorage.setItem('hasLaunched', 'true');
-                setTimeout(() => {
-                    router.push('/welcome/Page1');
-                }, 3000)
-            } else {
-                setTimeout(() => {
-                    router.push('/home')
-                }, 3000)
-            }
-        }
+  const [user, setUser] = useState(auth.currentUser);
 
-        checkFirstLaunch();
-    }, [router])
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+      if (user !== null) {
+        setTimeout(() => {
+          router.replace("/(tabs)/home");
+        }, 3000);
+      }
+      if (hasLaunched === null) {
+        await AsyncStorage.setItem("hasLaunched", "true");
+        setTimeout(() => {
+          router.replace("/welcome/Page1");
+        }, 3000);
+      } else {
+        setTimeout(() => {
+          router.replace("/auth");
+        }, 3000);
+      }
+    };
+
+    checkFirstLaunch();
+  }, [router]);
 
   return (
-    <View 
-    className='
+    <View
+      className="
         flex-1 
         justify-center 
-        items-center'>
-        <Text 
+        items-center"
+    >
+      <Text
         className="
             text-4xl 
-            font-bold">
-                clubhub
-        </Text>
+            font-bold"
+      >
+        clubhub
+      </Text>
     </View>
-  )
-}
+  );
+};
 
-export default TitleScreen
+export default TitleScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
