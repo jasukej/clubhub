@@ -14,7 +14,7 @@ const TitleScreen = () => {
       const hasLaunched = await AsyncStorage.getItem("hasLaunched");
       if (user !== null) {
         setTimeout(() => {
-          router.replace("/(tabs)/home");
+          router.replace("/(tabs)");
         }, 3000);
       }
       if (hasLaunched === null) {

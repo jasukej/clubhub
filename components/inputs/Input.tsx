@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form'
 
 interface InputProps {
     label: string;
-    placeholder: string;
+    placeholder?: string;
     control: any;
     name: string;
     secureTextEntry?: boolean;
@@ -43,7 +43,7 @@ const Input = ({
             render={({field: {onBlur, onChange, value}}) => (
                 <TextInput 
                     className="border rounded-md p-2 w-full"
-                    placeholder={placeholder}
+                    placeholder={placeholder ? placeholder : ''}
                     onBlur={onBlur}
                     value={value}
                     secureTextEntry={secureTextEntry}

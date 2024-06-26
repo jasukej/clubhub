@@ -25,6 +25,8 @@ const OnboardingPage = ({
 }:OnboardingPage) => {
 
     const router = useRouter();
+
+    
   return (
     <View>
         <ProgressBar

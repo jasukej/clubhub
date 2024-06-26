@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { useRouter } from "expo-router";
 import { auth } from "../../config/firebase";
-import Input from "../../components/Input";
+import Input from "../../components/inputs/Input";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
@@ -40,6 +40,8 @@ const LogIn = () => {
         values.password
       );
       const user = userCredential.user;
+      console.log(user);
+      // redirecting logic managed in /app/_layout.tsx
     } catch (error) {
       console.log("Unable to log in.");
     }

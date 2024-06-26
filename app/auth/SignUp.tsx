@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { auth, db } from "../../config/firebase";
 import { User, createUserWithEmailAndPassword } from "firebase/auth";
-import Input from "@/components/Input";
+import Input from '@/components/inputs/Input';
 import { AntDesign, Feather } from "@expo/vector-icons";
 import Button from "@/components/Button";
 import { Controller, useForm } from "react-hook-form";
@@ -41,8 +41,7 @@ const SignUp = () => {
   const createUserProfile = async (user:User) => {
     const userRef = doc(db, 'users', user.uid);
     await setDoc(userRef, {
-      firstName: '',
-      lastName: '',
+      fullName: '',
       username: '', // Add username field
       email: user.email,
       year: 0,

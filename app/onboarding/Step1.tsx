@@ -1,69 +1,72 @@
 // OnboardingStep1.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'expo-router';
 import { View, Text, TouchableOpacity } from 'react-native';
-import Input from '@/components/Input';
+import Input from '@/components/inputs/Input';
 import Button from '@/components/Button';
+import OnboardingPage from './OnboardingPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { setFullName, setUsername } from '@/onboardingSlice';
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  displayName: string;
+  fullName: string;
+  username: string;
 }
 
 const defaultValues: FormValues = {
-  firstName: '',
-  lastName: '',
-  displayName: ''
+  fullName: '',
+  username: ''
 };
 
 const OnboardingStep1 = () => {
   const router = useRouter();
-  const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
-    defaultValues
-  });
-
-  const onSubmit = (values: FormValues) => {
-    // Save the values to the user's profile in Firestore
-    // Redirect to the next onboarding step
+  // to trigger a state change; point of Redux is that your components never access state directly
+  const dispatch = useDispatch();
+  const { fullName, username } = useSelector((state: RootState) => state.onboarding) // !!!
+  const { control, handleSubmit, formState: { errors }} = useForm({
+    defaultValues: {
+      fullName,
+      username,
+    }
+  })
+  
+  const onNext = (data: { fullName:string; username:string}) => {
+    // dispatch takes in an ACTIOn to change state in store
+    dispatch(setFullName(data.fullName));
+    dispatch(setUsername(data.username));
     router.push('/onboarding/Step2');
-  };
+  }
 
-  return (
-    <View className="flex-1 justify-center items-center bg-white p-4">
-      <Text className="text-2xl font-bold">cool. let’s get started!</Text>
-      <Input
-        label="First Name"
-        placeholder="First"
+  const bodyContent = (
+    <View>
+      <Input 
+        label="Full name"
+        name="fullName"
         control={control}
-        name="firstName"
-        rules={{ required: 'Please enter your first name' }}
+        rules={{ required: 'Full name is required.' }}
         errors={errors}
       />
+      {/* validate username is unique */}
       <Input
-        label="Last Name"
-        placeholder="Last"
+        label="Username"
+        name="username"
         control={control}
-        name="lastName"
-        rules={{ required: 'Please enter your last name' }}
+        rules={{ required: 'Username is required.' }}
         errors={errors}
-      />
-      <Input
-        label="Display Name"
-        placeholder="display name"
-        control={control}
-        name="displayName"
-        rules={{ required: 'Please enter a display name' }}
-        errors={errors}
-      />
-      <Button
-        variant="primary"
-        label="Next"
-        onPress={handleSubmit(onSubmit)}
-        className="mt-4"
       />
     </View>
+  )
+
+  return (
+    <OnboardingPage
+      progress={0.25}
+      heading="cool. let's get started"
+      subheading="Make a unique username."
+      bodyContent={bodyContent}
+      onNext={handleSubmit(onNext)}
+    />
   );
 };
 
