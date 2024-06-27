@@ -49,7 +49,7 @@ const SignUp = () => {
       program: '',
       orgsFollowed: [], // Initialize as an empty array
       createdAt: serverTimestamp(),
-      excOf: [],
+      execOf: [],
       friends: [],
       interests: [],
       registeredEvents: [],
@@ -69,7 +69,7 @@ const SignUp = () => {
         await createUserProfile(user);
         router.replace("/onboarding/Step1");
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     } else {
       alert("Passwords don't match.");

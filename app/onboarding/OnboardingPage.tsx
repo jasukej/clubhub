@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React from 'react'
 import { ProgressBar } from 'react-native-paper';
 import { useRouter } from 'expo-router';
@@ -26,41 +26,63 @@ const OnboardingPage = ({
 
     const router = useRouter();
 
-    
   return (
-    <View>
-        <ProgressBar
-            progress={progress}
-            color={'#0000FF'}
-            className="absolute bottom-0 w-full"
-        />
-      <Text className="text-2xl font-bold">
+    <TouchableWithoutFeedback 
+      className="relative min-h-screen"
+      onPress={() => {Keyboard.dismiss()}} 
+      accessible={false}>
+    <View 
+    className="
+      relative
+      min-h-screen">
+      <ProgressBar
+        progress={progress}
+        color='#3954E4'
+        className="absolute bottom-0 w-full"
+      />
+    <View 
+    className="
+      flex 
+      flex-col 
+      p-4 
+      pt-[12vh]
+      px-10
+      gap-y-4
+
+    ">
+      <Text className="text-4xl font-bold mb-2">
         {heading}
       </Text>
-      <Text className="text-lg mb-4">
+      <Text className="text-md font-light mb-4">
         {subheading}
       </Text>
       {bodyContent}
       <View 
         className="
-        flex-row 
+        flex
+        flex-row
+        justify-between
         mt-4
-        gap-x-2"
+        space-x-2"
         >
         {onBack && (
             <Button 
                 variant="outline"
                 label="Back"
                 onPress={onBack}
+                className="flex-1 mr-2"
             />
         )}
         <Button 
             variant="primary"
             label={isFinalStep ? 'Submit' : 'Next'}
             onPress={onNext}
+            className="flex-1 ml-2"
         />
       </View>
     </View>
+    </View>
+    </TouchableWithoutFeedback>
   )
 }
 

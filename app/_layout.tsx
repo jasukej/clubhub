@@ -35,25 +35,31 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        if (user) {
-          const userRef = doc(db, 'users', user.uid);
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+        if (authUser) {
+          const userRef = doc(db, 'users', authUser.uid);
           const userDoc = await getDoc(userRef);
+
           if (userDoc.exists()) {
             // if exists, check that the neccessary fields exist to redirect to tabs view
             const userData = userDoc.data();
             console.log(userData);
-            const requiredFields = ['fullName', 'username', 'year', 'program'];
+            const requiredFields = [
+              'fullName', 
+              'username', 
+              'year', 
+              'program'
+            ];
 
             if (requiredFields.every(field => userData[field])) {
-              setUser(user);
+              setUser(authUser);
               router.replace('/(tabs)');
             } else {
               router.replace('/onboarding/Step1');
             }
           } 
         } else {
-          setUser(user)
+          setUser(null)
           router.replace('/auth');
         }
     });

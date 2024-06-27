@@ -1,11 +1,36 @@
 // app/auth/index.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import * as AuthSession from 'expo-auth-session';
+import * as Google from 'expo-auth-session/providers/google';
+import { FacebookAuthProvider, GoogleAuthProvider, getAuth, signInWithCredential } from 'firebase/auth';
+import { discovery } from 'expo-auth-session/build/providers/Facebook';
 
 const AuthLanding = () => {
+
+  // GOOGLE AUTH
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: 'YOUR_EXPO_CLIENT_ID',
+    iosClientId: 'YOUR_IOS_CLIENT_ID',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+    webClientId: 'YOUR_WEB_CLIENT_ID',
+  })
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+      const auth = getAuth();
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential);
+    }
+  }, [response]);
+
+  // FACEBOOK AUTH
+  // !!!
+
   const router = useRouter();
 
   return (
@@ -44,6 +69,8 @@ const AuthLanding = () => {
       <Text className="mt-4">or sign in through</Text>
       <View className="flex-row mt-4">
         <TouchableOpacity 
+            disabled={!request}
+            onPress={() => promptAsync()}
             className="
             bg-white 
             border 

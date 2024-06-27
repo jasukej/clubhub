@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "clubhub",
+    "extra": {
+      "firebaseWebClientId": "67646054049-v3vc66h7nkk0k5vvsfu93i1qbdhbc80t.apps.googleusercontent.com"
+    },
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -13,13 +16,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.clubhub"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "dev.clubhub"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +32,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-facebook"
     ],
     "experiments": {
       "typedRoutes": true

@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { useRouter } from "expo-router";
-import { auth } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import Input from "../../components/inputs/Input";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import Button from "@/components/Button";
+import { doc, getDoc } from "firebase/firestore/lite";
 
 interface FormValues {
   email: string;
@@ -40,10 +41,29 @@ const LogIn = () => {
         values.password
       );
       const user = userCredential.user;
-      console.log(user);
-      // redirecting logic managed in /app/_layout.tsx
+      console.log(user.uid);
+
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        const requiredFields = [
+          'fullName',
+          'username',
+          'year',
+          'program'
+        ]
+
+        if (requiredFields.every(field => data[field])) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/onboarding/Step1');
+        }
+      } 
+
     } catch (error) {
-      console.log("Unable to log in.");
+      console.error("Unable to log in.", error);
     }
   };
 

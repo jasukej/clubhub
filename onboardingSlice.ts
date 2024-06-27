@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface OnboardingState {
     fullName: string,
     username: string,
-    year: number,
+    year: string,
     program: string,
     interests: string[],
     partOfAnyClubs: string[]
@@ -12,7 +12,7 @@ interface OnboardingState {
 const initialState:OnboardingState = {
     fullName: '',
     username: '',
-    year: 0,
+    year: '',
     program: '',
     interests: [],
     partOfAnyClubs: [],
@@ -32,7 +32,7 @@ const onboardingSlice = createSlice({
         setUsername: (state, action: PayloadAction<string>) => {
             state.username = action.payload;
         },
-        setYear: (state, action: PayloadAction<number>) => {
+        setYear: (state, action: PayloadAction<string>) => {
             state.year = action.payload;
         },
         setProgram: (state, action: PayloadAction<string>) => {

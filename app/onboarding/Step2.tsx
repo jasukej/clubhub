@@ -9,12 +9,12 @@ import OnboardingPage from './OnboardingPage'
 import Input from '@/components/inputs/Input';
 
 interface FormValues {
-    year: number,
+    year: string,
     program: string,
 }
 
 const defaultValues: FormValues = {
-    year: 0, 
+    year: '', 
     program: ''
 }
 
@@ -31,7 +31,7 @@ const OnboardingStep2 = () => {
         },
     })
 
-    const onNext = (data: { year: number, program: string }) => {
+    const onNext = (data: { year: string, program: string }) => {
         dispatch(setYear(data.year));
         dispatch(setProgram(data.program));
         router.push('/onboarding/Step3');
@@ -41,16 +41,22 @@ const OnboardingStep2 = () => {
         router.back();
     }
 
+    const currentYear = new Date().getFullYear();
+    const validYears = Array.from({ length: 8 }, (_, i) => (currentYear + i).toString());
+
     const bodyContent = (
         <View>
           <Input 
-            label="Year"
+            label="Expected graduation year"
             name="year"
             control={control}
-            rules={{ required: 'Year is required.' }}
+            rules={{ 
+                required: 'Year is required.',
+                validate: (value:string) => validYears.includes(value) || 'Year must be between 1 and 7.'
+            }}
             errors={errors}
           />
-          {/* validate year is 1, 2, 3, 4, 5, 6, 7 */}
+        {/* validate year is 1, 2, 3, 4, 5, 6, 7 */}
           <Input
             label="Program of study"
             name="program"
@@ -68,6 +74,7 @@ const OnboardingStep2 = () => {
           subheading="Enter your year and program of study."
           bodyContent={bodyContent}
           onNext={handleSubmit(onNext)}
+          onBack={onBack}
         />
       );
 }

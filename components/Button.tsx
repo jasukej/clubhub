@@ -21,7 +21,6 @@ const Button = ({
     className,
     textClassName
 }:ButtonProps) => {
-    console.log(className)
   return (
     <TouchableOpacity 
     onPress={onPress} 
@@ -46,7 +45,7 @@ const Button = ({
 const variantStyles = {
   dark: 'bg-gray-800',
   outline: 'border border-black bg-transparent',
-  primary: 'bg-blue-500',
+  primary: 'bg-blue',
   secondary: 'bg-gray-400',
 };
 

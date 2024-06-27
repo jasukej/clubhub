@@ -41,7 +41,8 @@ const OnboardingStep3 = () => {
     }
 
     const bodyContent = (
-        <View>
+        <View 
+          className="mt-4">
           <Controller 
             control={control}
             name="interests"

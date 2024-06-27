@@ -9,6 +9,8 @@ import OnboardingPage from './OnboardingPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { setFullName, setUsername } from '@/onboardingSlice';
+import { collection, getDocs, query, where } from 'firebase/firestore/lite';
+import { db } from '@/config/firebase';
 
 interface FormValues {
   fullName: string;
@@ -32,11 +34,19 @@ const OnboardingStep1 = () => {
     }
   })
   
-  const onNext = (data: { fullName:string; username:string}) => {
+  const onNext = (
+    data: { fullName:string; username:string}) => {
     // dispatch takes in an ACTIOn to change state in store
     dispatch(setFullName(data.fullName));
     dispatch(setUsername(data.username));
     router.push('/onboarding/Step2');
+  };
+
+  const checkUsernameExists = async (username: string) => {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('username', '==', username));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
   }
 
   const bodyContent = (
@@ -53,7 +63,17 @@ const OnboardingStep1 = () => {
         label="Username"
         name="username"
         control={control}
-        rules={{ required: 'Username is required.' }}
+        rules={{ 
+          required: 'Username is required.',
+          maxLength: {
+            value: 15,
+            message: 'Username cannot exceed 15 characters.'
+          },
+          validate: async (value:any) => {
+            const usernameTaken = await checkUsernameExists(value);
+            return usernameTaken ? 'Username already taken.' : true;
+          }
+         }}
         errors={errors}
       />
     </View>
@@ -62,7 +82,7 @@ const OnboardingStep1 = () => {
   return (
     <OnboardingPage
       progress={0.25}
-      heading="cool. let's get started"
+      heading="cool. let's get started!"
       subheading="Make a unique username."
       bodyContent={bodyContent}
       onNext={handleSubmit(onNext)}

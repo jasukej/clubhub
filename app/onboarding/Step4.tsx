@@ -36,10 +36,16 @@ const Step4 = () => {
         }
 
         const userRef = doc(db, 'users', auth.currentUser.uid);
-        await setDoc(userRef, {
-            ...onboardingData,
-            execOf: data.partOfAnyClubs,
-        })
+        try {
+          await setDoc(userRef, {
+              ...onboardingData,
+              execOf: data.partOfAnyClubs,
+          });
+          router.replace('/(tabs)');
+        } catch (error) {
+          console.error("Couldn't create user.")
+        }
+
     }
 
   return (
@@ -52,7 +58,6 @@ const Step4 = () => {
           label="Enter clubs you are an exec of:"
           name="partOfAnyClubs"
           control={control}
-          rules={{ required: 'This field is required' }}
           errors={errors}
         />
       }
