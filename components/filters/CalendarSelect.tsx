@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const FilterBar = () => {
+const CalendarSelect = () => {
   return (
     <View>
-      <Text>FilterBar</Text>
+      <Text>CalendarSelect</Text>
     </View>
   )
 }
 
-export default FilterBar
+export default CalendarSelect

@@ -11,7 +11,7 @@ import { getFirestore } from 'firebase/firestore/lite'
 
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBqp9qBGHEK7gatkLBQhGhBrJFNgMXnVpA",
+    apiKey: 'AIzaSyBqp9qBGHEK7gatkLBQhGhBrJFNgMXnVpA', //process.env.FIREBASE_API_KEY,
     authDomain: "clubhub-68525.firebaseapp.com",
     projectId: "clubhub-68525",
     storageBucket: "clubhub-68525.appspot.com",
