@@ -11,7 +11,8 @@ interface OnboardingPage {
     bodyContent: React.ReactNode;
     onNext: () => void;
     onBack?: () => void;
-    isFinalStep?: boolean
+    isFinalStep?: boolean;
+    isFirstStep?: boolean;
 }
 
 const OnboardingPage = ({
@@ -21,7 +22,8 @@ const OnboardingPage = ({
     bodyContent,
     onNext,
     onBack,
-    isFinalStep
+    isFinalStep,
+    isFirstStep
 }:OnboardingPage) => {
 
     const router = useRouter();
@@ -65,20 +67,24 @@ const OnboardingPage = ({
         mt-4
         space-x-2"
         >
+        {!isFirstStep && (<View className="w-[48%]">
         {onBack && (
             <Button 
                 variant="outline"
                 label="Back"
                 onPress={onBack}
-                className="flex-1 mr-2"
+                className="flex-1"
             />
         )}
+        </View> )}
+        <View className={`${isFirstStep ? 'w-[100%]' : 'w-[48%]'}`}>
         <Button 
             variant="primary"
             label={isFinalStep ? 'Submit' : 'Next'}
             onPress={onNext}
-            className="flex-1 ml-2"
+            className="flex-1"
         />
+        </View>
       </View>
     </View>
     </View>

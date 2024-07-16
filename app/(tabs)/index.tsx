@@ -1,15 +1,16 @@
-import { Image, StyleSheet, Platform, View, Text, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, View, Text, ScrollView, FlatList, SafeAreaView } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { collection, doc, getDocs, where, query } from 'firebase/firestore/lite';
 import { db } from '@/config/firebase';
-import { SearchBar } from 'react-native-screens';
 import FilterBar from '@/components/homepage/FilterBar';
 import EventCard from '@/components/event/EventCard';
 import { useEffect, useState } from 'react';
 import LocationBar from '@/components/homepage/LocationBar';
+import SearchBar from '@/components/homepage/SearchBar';
 
 interface Event {
+  id: string,
   name: string,
   applicationNeeded: boolean,
   attendees: any,
@@ -32,6 +33,7 @@ export default function HomeScreen() {
 
   // simple query for now
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
 
   console.log(events);
@@ -81,36 +83,38 @@ export default function HomeScreen() {
   }, [searchQuery]);
 
   return (
-    <View className="flex-1">
-      <View>
+    <SafeAreaView 
+      className="
+        flex-1 
+        bg-white">
+    <View className="flex-1 pt-4 px-6">
+      <View className="
+        flex 
+        space-y-4">
         <LocationBar />
-        <SearchBar />
-        <FilterBar />
+        <SearchBar 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery} 
+        />
+        <FilterBar onDateChange={(date) => setSelectedDate(date.toDate())}/>
       </View>
       <Text
       className="
         text-2xl
         font-bold
         mt-4
-        mb-2
-        px-4
+        mb-4
       ">
         top picks for you
-        <ScrollView 
-        className="
-          flex
-          flex-col
-          gap-y-4
-        "
-        contentContainerStyle={{ paddingBottom: 100 }}>
-          {events.map((evt, index) => (
-            <EventCard
-              key={index}
-              event={evt}
-            />
-          ))}
-        </ScrollView>
       </Text>
+        <FlatList
+        data={events}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <EventCard event={item} />}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        className="flex"
+      />
     </View>
+    </SafeAreaView>
   );
 }

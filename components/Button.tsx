@@ -31,7 +31,7 @@ const Button = ({
         items-center 
         flex
         justify-center
-        gap-x-4"
+        gap-x-2"
         >
         {icon && {icon}}
         <Text className={`text-md ${variantTextStyles[variant]} ${textClassName}`}>

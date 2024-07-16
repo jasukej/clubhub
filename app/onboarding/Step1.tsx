@@ -86,6 +86,7 @@ const OnboardingStep1 = () => {
       subheading="Make a unique username."
       bodyContent={bodyContent}
       onNext={handleSubmit(onNext)}
+      isFirstStep
     />
   );
 };

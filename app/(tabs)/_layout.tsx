@@ -16,7 +16,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#D9D9D9',
         tabBarStyle: { 
           backgroundColor: '#3A4DB5',
-          paddingBottom: 38,
+          paddingBottom: 32,
           paddingTop: 0,
           minHeight: 100
         },
@@ -77,7 +77,7 @@ export default function TabLayout() {
         options={{
           title: 'Events',
           tabBarIcon: ({ color, focused }) => (
-            <View style={{ alignItems: 'center', position: 'relative' }}>
+            <View style={{ alignItems: 'center', position: 'relative', minHeight: '100%' }}>
               {focused && <Animated.View style={{ position: 'absolute', top: 0, width: '100%', height: 4, backgroundColor: 'white' }} />}
               <MaterialCommunityIcons style={{paddingTop: 12}} name={focused ? 'calendar' : 'calendar-outline'} color={color} size={30} />
             </View>
@@ -89,7 +89,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <View style={{ alignItems: 'center', position: 'relative' }}>
+            <View style={{ alignItems: 'center', position: 'relative', minHeight: '100%' }}>
               {focused && <Animated.View style={{ position: 'absolute', top: 0, width: '100%', height: 4, backgroundColor: 'white' }} />}
               <MaterialCommunityIcons style={{paddingTop: 12}} name={focused ? 'account' : 'account-outline'} color={color} size={30} />
             </View>

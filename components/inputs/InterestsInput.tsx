@@ -43,8 +43,7 @@ const InterestsInput = ({ selectedInterests, onChange }:InterestsInputProps) => 
                     border 
                     border-black 
                     rounded-full 
-                    m-2 
-                    flex
+                    m-2
                     ${selected && 'bg-blue'}
                 `}
                 onPress={() => handleToggle(interest)}

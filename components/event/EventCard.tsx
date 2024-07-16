@@ -1,6 +1,7 @@
 import { View, Text, Image } from 'react-native'
 import React from 'react'
 import HeartButton from './HeartButton';
+import formatEventTime from '@/utils/formatCardEventTime';
 
 interface EventCardProps {
     event: any,
@@ -31,35 +32,55 @@ const EventCard = ({
     venue
   } = event;
 
+  const imageSource = media.length > 0 && media[0] != ""
+  ? { uri: media[0] } 
+  : require('../../assets/images/placeholder.png');
+
   return (
     <View 
     className="
-    border
     border-blue
+    border-[1.2px]
     rounded-md
     w-full
     relative
-    p-6
+    p-4
+    bg-white
+    shadow-sm
     ">
-      <HeartButton />
+      <View
+      className="
+        absolute
+        top-4
+        left-4
+      ">
+        <HeartButton 
+          eventId={event.id} 
+          currentUser={currentUser}
+        />
+      </View>
       <View
       className="
         flex
         flex-row
-        
+        gap-x-2
       ">
         <View>
-          <Image 
-            src={media.length > 0 ? media[0] : "/assets/placeholder.png"}
+        <Image 
+            source={imageSource}
+            style={{ width: 100, height: 100, borderRadius: 8 }} // Adjust size and styling as needed
           />
         </View>
         <View
         className="
           flex
           flex-col
-          gap-y-2
+          gap-y-1
           text-blue
         ">
+          <Text className="text-blue">
+           {formatEventTime(event.startTime, event.endTime)}{/* !!! custom hook to format time */}
+          </Text>
           <Text
           className="
             text-xl
@@ -75,9 +96,10 @@ const EventCard = ({
             by {hostedBy.map((org:any) => org.name).join(' and ')}
           </Text>
           <Text>
-            {startTime} - {endTime} {/* !!! custom hook to format time */}
-          </Text>
-          <Text>
+            <Text 
+            className="
+            text-sm 
+            text-gray-500">{attendees.length} attendees</Text>
             {/* !!! logic for querying friends only from attendees */}
           </Text>
         </View>

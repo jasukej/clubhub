@@ -9,6 +9,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import Button from "@/components/Button";
 import { doc, getDoc } from "firebase/firestore/lite";
+import { getYear } from "date-fns";
 
 interface FormValues {
   email: string;
@@ -55,7 +56,15 @@ const LogIn = () => {
           'program'
         ]
 
-        if (requiredFields.every(field => data[field])) {
+        const isValid = requiredFields.every(field => {
+          if (field === 'year') {
+            return data[field] && data[field] > getYear;
+          }
+          return data[field] && data[field].trim() !== '';
+        });
+  
+
+        if (isValid) {
           router.replace('/(tabs)');
         } else {
           router.replace('/onboarding/Step1');
