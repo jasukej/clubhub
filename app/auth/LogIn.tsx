@@ -58,8 +58,10 @@ const LogIn = () => {
 
         const isValid = requiredFields.every(field => {
           if (field === 'year') {
-            return data[field] && data[field] > getYear;
+            console.log(data[field] && data[field] > 2024)
+            return data[field] && data[field] > 2024;
           }
+          console.log(field, data[field] && data[field].trim() !== '')
           return data[field] && data[field].trim() !== '';
         });
   

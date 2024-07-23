@@ -42,6 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
     const fetchUserFromStore = async () => {
       const storedUser = await SecureStore.getItemAsync('user');
+      console.log(storedUser);
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
@@ -68,7 +69,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
           const isValid = requiredFields.every(field => {
             if (field === 'year') {
-              return userData[field] && parseInt(userData[field]) > new Date().getFullYear();
+              return userData[field] && parseInt(userData[field]) > 2024;
             }
             //@ts-ignore
             return userData[field].trim() !== '';
@@ -89,7 +90,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       } else {
         setUser(null);
         await SecureStore.deleteItemAsync('user');
-        router.replace('/auth');
+        router.replace('/(tabs)');
       }
     });
 

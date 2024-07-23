@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
 interface AvatarProps {
@@ -13,7 +13,7 @@ const Avatar = ({
   return (
     <View>
     {src &&
-      <img 
+      <Image 
         src={src} 
         height={size}
         width={size}
