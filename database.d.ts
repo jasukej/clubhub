@@ -5,14 +5,14 @@ type DocRef<T> = firebase.firestore.DocumentReference<T>;
 
 declare global {
   interface User {
-    uid: string;
+    uid?: string;
     fullName?: string;
     username?: string;
     year?: string;
     program?: string;
     bio?: string;
     interests?: string[];
-    friends: DocRef<User>[];
+    friends?: DocRef<User>[];
     execOf?: DocRef<Organization>[];
     image?: string;
     pronouns?: string;
@@ -22,7 +22,6 @@ declare global {
   }
 
 interface Organization {
-  uid: string;
   name: string;
   description?: string;
   members: DocRef<User>[];

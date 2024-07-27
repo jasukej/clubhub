@@ -40,7 +40,7 @@ const Profile = () => {
   const imgUrl = `gs://${storageBucket}/users/${userId}/images/avatar.jpg`;
 
   useEffect(() => {
-    const getOrgById = async () => {
+    const getOrgsById = async () => {
       try {
         if (user && execOf) {
           console.log(execOf);
@@ -60,7 +60,7 @@ const Profile = () => {
       }
     };
 
-    getOrgById();
+    getOrgsById();
   }, [user]);
 
   return (
@@ -78,11 +78,11 @@ const Profile = () => {
             </View>
           </View>
           <Text className="text-base">{bio}</Text>
-          {interests && <Text className="text-sm">Talk to me about: {interests.slice(0, 2).join(', ')} , more</Text>}
+          {interests && <Text className="text-sm">Talk to me about: {interests.slice(0, 2).join(', ')}, more</Text>}
           <Text className="text-sm">Exec @ {orgs.map((org) => (org.name)).join(', ')}</Text>
           <View className="flex flex-row flex-wrap space-x-2 space-y-2">
             {orgs.map((org) => (
-              <View key={org.uid} className="flex flex-col aspect-square items-center">
+              <View key={1} className="flex flex-col aspect-square items-center">
                 <View><Image src={org.logo} className="w-12 h-12"/></View>
                 <Text className="text-sm font-bold">{org.name}</Text>
                 <Text className="text-xs text-gray-500">{org.description}</Text>

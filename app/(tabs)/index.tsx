@@ -8,6 +8,7 @@ import EventCard from '@/components/event/EventCard';
 import { useEffect, useState } from 'react';
 import LocationBar from '@/components/homepage/LocationBar';
 import SearchBar from '@/components/homepage/SearchBar';
+import { useUser } from '@/context/UserContext';
 
 interface Event {
   id: string,
@@ -19,7 +20,7 @@ interface Event {
   createdAt: Date,
   ended: Date,
   field: string,
-  hostedBy: any,
+  organizationId: string,
   instagramLink: string,
   media: string[],
   rsvpLink: string,
@@ -32,6 +33,7 @@ interface Event {
 export default function HomeScreen() {
 
   // simple query for now
+  const { user, loading } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
@@ -65,7 +67,7 @@ export default function HomeScreen() {
           createdAt: data.createdAt.toDate(),
           ended: data.ended,
           field: data.field,
-          hostedBy: data.hostedBy,
+          organizationId: data.organizationId,
           instagramLink: data.instagramLink,
           media: data.media,
           rsvpLink: data.rsvpLink,
@@ -110,7 +112,7 @@ export default function HomeScreen() {
         <FlatList
         data={events}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <EventCard event={item} />}
+        renderItem={({ item }) => <EventCard currentUser={user} event={item} />}
         contentContainerStyle={{ paddingBottom: 100 }}
         className="flex"
       />

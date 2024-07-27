@@ -4,7 +4,8 @@ import React from 'react'
 const events = () => {
   return (
     <View>
-      <Text>events</Text>
+      <Text>your events</Text>
+      <View></View>
     </View>
   )
 }

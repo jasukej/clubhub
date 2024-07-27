@@ -1,7 +1,9 @@
 import { View, Text, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import HeartButton from './HeartButton';
 import formatEventTime from '@/utils/formatCardEventTime';
+import { db } from '@/config/firebase';
+import { collection, doc, getDoc } from 'firebase/firestore/lite';
 
 interface EventCardProps {
     event: any,
@@ -22,7 +24,7 @@ const EventCard = ({
     createdAt,
     ended,
     field,
-    hostedBy,
+    organizationId,
     instagramLink,
     media,
     rsvpLink,
@@ -35,6 +37,27 @@ const EventCard = ({
   const imageSource = media.length > 0 && media[0] != ""
   ? { uri: media[0] } 
   : require('../../assets/images/placeholder.png');
+
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      try {
+        const orgRef = doc(db, 'organizations', organizationId);
+        console.log(orgRef);
+        const orgSnap = await getDoc(orgRef);
+        console.log(orgSnap.data());
+
+        setOrg(orgSnap.data());
+
+      } catch (error) {
+        console.error('Error fetching organizations:', error);
+      }
+    };
+
+    fetchOrganization();
+  }, [organizationId]);
+
+  const [org, setOrg] = useState<any>(null);
+  console.log("currentUser is:", currentUser);
 
   return (
     <View 
@@ -93,7 +116,7 @@ const EventCard = ({
             text-md
             font-semibold
           ">
-            by {hostedBy.map((org:any) => org.name).join(' and ')}
+            by {org ? org.name : "Loading..."}
           </Text>
           <Text>
             <Text 

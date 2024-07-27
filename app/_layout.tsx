@@ -68,9 +68,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           ];
 
           const isValid = requiredFields.every(field => {
-            if (field === 'year') {
-              return userData[field] && parseInt(userData[field]) > 2024;
-            }
             //@ts-ignore
             return userData[field].trim() !== '';
           });
@@ -90,7 +87,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       } else {
         setUser(null);
         await SecureStore.deleteItemAsync('user');
-        router.replace('/(tabs)');
+        router.replace('/onboarding/Step1');
       }
     });
 
