@@ -56,8 +56,8 @@ const Step4 = () => {
       image: "",
       pronouns: "",
       institution: "",
-      favoritedEvents: [],
-      registeredEvents: []
+      favoritedIds: [],
+      registeredIds: []
     };
 
     // onNext has only been updating the global state in the onboarding store

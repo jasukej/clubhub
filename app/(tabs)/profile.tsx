@@ -5,6 +5,7 @@ import Avatar from '@/components/Avatar'
 import Button from '@/components/Button'
 import { useUser } from '@/context/UserContext'
 import { getDoc } from 'firebase/firestore'
+import OrganizationCard from '@/components/OrganizationCard'
 
 const Profile = () => {
   const { user, loading } = useUser();
@@ -31,8 +32,8 @@ const Profile = () => {
     image,
     pronouns,
     institution,
-    favoritedEvents,
-    registeredEvents,
+    favoritedIds,
+    registeredIds,
   } = user;
 
   const storageBucket = "clubhub-68525.appspot.com";
@@ -45,13 +46,9 @@ const Profile = () => {
         if (user && execOf) {
           console.log(execOf);
           const orgDetails: Organization[] = [];
-          for (const ref of execOf) {
-            const orgDoc = await getDoc(ref);
-            if (orgDoc.exists()) {
-              const orgData = orgDoc.data() as Organization;
-              orgDetails.push(orgData);
-            }
-          }
+          
+          // given execOf is an array of organizationIds (document ids), how do I query all organizations and render them from 'organizations' collection
+
           console.log(orgDetails);
           setOrgs(orgDetails);
         }
@@ -81,12 +78,8 @@ const Profile = () => {
           {interests && <Text className="text-sm">Talk to me about: {interests.slice(0, 2).join(', ')}, more</Text>}
           <Text className="text-sm">Exec @ {orgs.map((org) => (org.name)).join(', ')}</Text>
           <View className="flex flex-row flex-wrap space-x-2 space-y-2">
-            {orgs.map((org) => (
-              <View key={1} className="flex flex-col aspect-square items-center">
-                <View><Image src={org.logo} className="w-12 h-12"/></View>
-                <Text className="text-sm font-bold">{org.name}</Text>
-                <Text className="text-xs text-gray-500">{org.description}</Text>
-              </View>
+            {orgs.map((org, index) => (
+              <OrganizationCard key={index} org={org} />
             ))}
             <View className="w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full">
               <Text className="text-xs text-gray-500">Add</Text>

@@ -12,13 +12,13 @@ declare global {
     program?: string;
     bio?: string;
     interests?: string[];
-    friends?: DocRef<User>[];
-    execOf?: DocRef<Organization>[];
+    friends?: string[];
+    execOf?: string[];
     image?: string;
     pronouns?: string;
     institution?: string;
-    favoritedEvents?: DocRef<Event>[];
-    registeredEvents?: DocRef<Event>[];
+    favoritedIds?: string[];
+    registeredIds?: string[];
   }
 
 interface Organization {
@@ -40,18 +40,17 @@ interface Organization {
   phone?: number;
 }
 
-interface Event {
-  uid: string;
-  name: string;
+interface EventObj {
+  name?: string;
   description?: string;
-  date: Date;
-  time: string;
-  location: string;
-  organization: DocRef<Organization>;
-  attendees: DocRef<User>[];
-  feedback: DocRef<Feedback>[];
-  createdAt: Date;
-  updatedAt: Date;
+  date?: Date;
+  time?: string;
+  location?: string;
+  organization?: string;
+  attendees?: string[];
+  feedback?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface Feedback {
