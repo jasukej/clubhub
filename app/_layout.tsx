@@ -19,6 +19,9 @@ import { Provider } from 'react-redux';
 import { UserContext, UserContextType } from "@/context/UserContext";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import * as SecureStore from 'expo-secure-store';
+import { useRootNavigationState, Redirect } from 'expo-router';
+import { TamaguiProvider } from 'tamagui'
+import { tamaguiConfig } from '../tamagui.config'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,14 +45,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
     const fetchUserFromStore = async () => {
       const storedUser = await SecureStore.getItemAsync('user');
-      console.log(storedUser);
+      console.log("stored user is ", storedUser);
       if (storedUser) {
         setUser(JSON.parse(storedUser));
+        router.replace('/(tabs)');
       }
       setLoading(false);
     }
-
-    fetchUserFromStore();
 
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
@@ -137,12 +139,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value = {{ user, loading, login, logout}}>
-    <Provider store={store}>
-      <View style={{ flex: 1 }}>
-        <Slot />
-      </View>
-    </Provider>
-    </UserContext.Provider>
+    <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+      <UserContext.Provider value = {{ user, loading, login, logout}}>
+      <Provider store={store}>
+        <View style={{ flex: 1 }}>
+          <Slot />
+        </View>
+      </Provider>
+      </UserContext.Provider>
+    </TamaguiProvider>
   );
 }

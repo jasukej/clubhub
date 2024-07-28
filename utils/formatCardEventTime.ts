@@ -1,7 +1,10 @@
 import { format } from 'date-fns';
 
-const formatEventTime = (startTime: Date, endTime: Date): string => {
-  const isSameDay = startTime.toDateString() === endTime.toDateString();
+const formatEventTime = (startTime: any, endTime: any): string => {
+  const start = (startTime instanceof Date) ? startTime : new Date(startTime);
+  const end = (endTime instanceof Date) ? endTime : new Date(endTime);
+
+  const isSameDay = start.toDateString() === end.toDateString();
   
   if (isSameDay) {
     return `${format(startTime, 'MMMM d')} at ${format(startTime, 'hh:mm a')}`;

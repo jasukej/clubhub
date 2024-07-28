@@ -6,14 +6,15 @@ import Button from '@/components/Button'
 import { useUser } from '@/context/UserContext'
 import { getDoc } from 'firebase/firestore'
 import OrganizationCard from '@/components/OrganizationCard'
+import { collection, getDocs, query, where } from 'firebase/firestore/lite'
+import { db } from '@/config/firebase'
+import Octicons from '@expo/vector-icons/Octicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Profile = () => {
   const { user, loading } = useUser();
   const [orgs, setOrgs] = useState<Organization[]>([]);
 
-  if (loading) {
-    return <View>Loading...</View> // replace with loader later
-  }
 
   if (!user) {
     return <Text>User not logged in</Text>;
@@ -43,13 +44,11 @@ const Profile = () => {
   useEffect(() => {
     const getOrgsById = async () => {
       try {
-        if (user && execOf) {
-          console.log(execOf);
-          const orgDetails: Organization[] = [];
-          
-          // given execOf is an array of organizationIds (document ids), how do I query all organizations and render them from 'organizations' collection
-
-          console.log(orgDetails);
+        if (user && execOf && execOf.length > 0) {
+          const q = query(collection(db, 'organizations'), where('__name__', 'in', execOf));
+          const snapshot = await getDocs(q);
+          const orgDetails = snapshot.docs.map(doc => doc.data());
+          //@ts-ignore
           setOrgs(orgDetails);
         }
       } catch (error) {
@@ -74,23 +73,26 @@ const Profile = () => {
               </Text>
             </View>
           </View>
-          <Text className="text-base">{bio}</Text>
+          <Text className="text-sm">{bio}</Text>
+          <View className="flex-row items-center space-x-2">
+          <MaterialCommunityIcons name="hand-wave-outline" size={16} color="black" />
           {interests && <Text className="text-sm">Talk to me about: {interests.slice(0, 2).join(', ')}, more</Text>}
-          <Text className="text-sm">Exec @ {orgs.map((org) => (org.name)).join(', ')}</Text>
-          <View className="flex flex-row flex-wrap space-x-2 space-y-2">
+          </View>
+          <View className="flex-row items-center space-x-2">
+            <Octicons name="verified" size={16} color="blue" />
+            <Text className="text-sm text-blue">Exec @ {orgs.map((org) => (org.name)).join(', ')}</Text>
+          </View>
+          <ScrollView className="flex flex-row space-x-4 mt-6 space-y-2">
             {orgs.map((org, index) => (
               <OrganizationCard key={index} org={org} />
             ))}
-            <View className="w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full">
-              <Text className="text-xs text-gray-500">Add</Text>
-            </View>
-          </View>
+          </ScrollView>
           <View className="flex flex-row space-x-4">
             <Button label="Add Friend" onPress={() => {}} variant="primary" />
             <Button label="Message" onPress={() => {}} variant="secondary" />
           </View>
           <View className="gap-y-4">
-            <Text className="text-2xl font-bold">activity</Text>
+            <Text className="text-2xl font-bold">recent activity</Text>
             {/* Filler activity items */}
             <View className="mt-2">
               <Text>Lilian added feedback to Intro to SQL</Text>

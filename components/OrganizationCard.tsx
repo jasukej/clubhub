@@ -7,10 +7,11 @@ interface OrganizationCardProps {
 
 const OrganizationCard = ({org}:OrganizationCardProps) => {
   return (
-    <View className="flex flex-col aspect-square items-center">
-        <View><Image src={org.logo} className="w-12 h-12"/></View>
-        <Text className="text-sm font-bold">{org.name}</Text>
-        <Text className="text-xs text-gray-500">{org.description}</Text>
+    <View className="border-[1px] w-40 h-40 aspect-square p-4 overflow-hidden rounded-lg">
+        <View className="flex flex-col">
+            <Text className="font-bold text-md">{org.name}</Text>
+            <Text className="text-xs truncate max-w-8 wra">{org.description}</Text>
+        </View>
     </View>
   )
 }

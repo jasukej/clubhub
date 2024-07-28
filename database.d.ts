@@ -24,9 +24,9 @@ declare global {
 interface Organization {
   name: string;
   description?: string;
-  members: DocRef<User>[];
-  events: DocRef<Event>[];
-  feedback: DocRef<Feedback>[];
+  members: string[];
+  events: string[];
+  feedback: string[];
   createdAt: Date;
   yearFounded: Date;
   org_type: string;
