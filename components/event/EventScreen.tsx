@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import formatEventTime from "@/utils/formatCardEventTime";
@@ -29,24 +30,45 @@ const EventScreen = ({ event, onBack }: EventScreenProps) => {
   return (
     <View className="flex-1 p-4">
       <ScrollView contentContainerStyle={{ paddingTop: 10 }}>
+        <TouchableOpacity onPress={onBack} style={{ padding: 10 }}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
         <Image
           source={imageSource}
           style={{ width: "100%", height: 200, borderRadius: 8 }}
         />
-        <TouchableOpacity onPress={onBack} style={{ padding: 10 }}>
-          <AntDesign name="arrowleft" size={24} color="black" />
-        </TouchableOpacity>
 
         <View
           style={{
             backgroundColor: "white",
             padding: 16,
+            marginBottom: 10,
           }}
         >
-          <Text className="text-2xl font-bold">{name}</Text>
-          <Text>{formatEventTime(startTime, endTime)}</Text>
-          <Text>{venue}</Text>
-          <Text>{description}</Text>
+          <Text className="text-3xl font-bold text-blue">{name}</Text>
+          <Text className="text-blue">
+            {formatEventTime(startTime, endTime)}
+          </Text>
+          <Text></Text>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ fontWeight: "bold", color: "blue", width: 80 }}>
+              Desc:
+            </Text>
+            <Text style={{ color: "blue", flex: 1 }}>{description}</Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              marginTop: 5,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", color: "blue", width: 80 }}>
+              Venue:
+            </Text>
+            <Text style={{ color: "blue", flex: 1 }}>{venue}</Text>
+          </View>
         </View>
       </ScrollView>
     </View>
