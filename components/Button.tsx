@@ -11,6 +11,7 @@ interface ButtonProps {
     icon?: any;
     className?: string;
     textClassName?: string;
+    noFlex?:boolean;
 }
 
 const Button = ({ 
@@ -19,12 +20,13 @@ const Button = ({
     variant, 
     icon,
     className,
-    textClassName
+    textClassName,
+    noFlex
 }:ButtonProps) => {
   return (
     <TouchableOpacity 
     onPress={onPress} 
-    className={`p-2 w-full rounded-lg mt-4 ${variantStyles[variant]} ${className}`}>
+    className={`${className} p-2 ${!noFlex ? "w-full mt-4" : "mt-2"} rounded-lg ${variantStyles[variant]}`}>
       <View 
       className="
         flex-row 
@@ -33,10 +35,11 @@ const Button = ({
         justify-center
         gap-x-2"
         >
-        {icon && {icon}}
+        {icon && icon}
+        {label.trim() != "" &&
         <Text className={`text-md ${variantTextStyles[variant]} ${textClassName}`}>
           {label}
-        </Text>
+        </Text>}
       </View>
     </TouchableOpacity>
   );

@@ -7,6 +7,8 @@ import {
   ScrollView,
   FlatList,
   SafeAreaView,
+  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import {
   collection,
@@ -14,15 +16,22 @@ import {
   getDocs,
   where,
   query,
+  Timestamp,
 } from "firebase/firestore/lite";
 import { db } from "@/config/firebase";
 import FilterBar from "@/components/homepage/FilterBar";
 import EventCard from "@/components/event/EventCard";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LocationBar from "@/components/homepage/LocationBar";
 import SearchBar from "@/components/homepage/SearchBar";
 import { useUser } from "@/context/UserContext";
 import EventScreen from "@/components/event/EventScreen";
+import { DatePickerModal } from 'react-native-paper-dates';
+import Button from "@/components/Button";
+import { format } from "date-fns";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import NoEventsView from "@/components/event/NoEventsView";
+import { router } from "expo-router";
 
 interface Event {
   id: string;
@@ -46,11 +55,28 @@ interface Event {
 
 export default function HomeScreen() {
   // simple query for now
-  const { user, loading } = useUser();
+  const { user, refreshUser } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventObj | null>(null);
+
+  const [open, setOpen] = useState(false);
+
+  const onDismiss = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirm = useCallback(
+    //@ts-ignore
+    ({ startDate, endDate }) => {
+      setOpen(false);
+      setStartDate(startDate);
+      setEndDate(endDate);
+    },
+    [setOpen, setStartDate, setEndDate]
+  );
 
   console.log(events);
 
@@ -69,6 +95,13 @@ export default function HomeScreen() {
       } else {
         q = query(collection(db, "events"));
       }
+      
+      // Having problems
+      if (startDate && endDate) {
+        q = query(q, where("startTime", ">=", Timestamp.fromDate(startDate)), where("endTime", "<=", Timestamp.fromDate(endDate)));
+      }
+
+      console.log(q);
 
       const querySnapshot = await getDocs(q);
       const eventsList = querySnapshot.docs.map((doc) => {
@@ -98,7 +131,7 @@ export default function HomeScreen() {
     };
 
     fetchEvents();
-  }, [searchQuery]);
+  }, [searchQuery, startDate, endDate]);
 
   const onEventPress = (event: EventObj) => {
     setSelectedEvent(event);
@@ -118,43 +151,70 @@ export default function HomeScreen() {
         flex-1 
         bg-white"
     >
-      <View className="flex-1 pt-4 px-6">
+      <View className="flex-1 relative pt-4 px-6">
         <View
           className="
         flex 
-        space-y-4"
-        >
+        space-y-4
+        mb-6
+        ">
           <LocationBar />
+          <View>
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-          <FilterBar onDateChange={(date) => setSelectedDate(date.toDate())} />
+          <View className="flex-row flex justify-between">
+            <View className="mt-2">
+              <Text className="font-light text-neutral-500">Events happening during</Text>
+              <Text className="text-sm font-semibold text-blue-dark ">{startDate && endDate ? 
+                `${format(startDate, "d MMMM yyyy")} - ${format(endDate, "d MMMM yyyy")}` 
+                : "Anytime"}
+              </Text>
+            </View>
+            <Button
+              icon={<MaterialIcons name="date-range" size={24} color="white" />}
+              label="" 
+              onPress={() => setOpen(true)} 
+              variant="primary"
+              noFlex
+            />
+          </View>
+          </View>
+          <DatePickerModal
+            visible={open}
+            onDismiss={onDismiss}
+            locale="en"
+            mode="range"
+            startDate={startDate}
+            endDate={endDate}
+            onConfirm={onConfirm}
+            label="Pick A Date Range"
+          />
         </View>
-        <Text
-          className="
-        text-2xl
-        font-bold
-        mt-4
-        mb-4
-      "
-        >
-          top picks for you
-        </Text>
+        {events.length > 0 ? 
         <FlatList
           data={events}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <EventCard
               currentUser={user}
+              refresh={refreshUser}
               event={item}
               onPress={() => onEventPress(item)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 100 }}
           className="flex"
-        />
+        /> : 
+        <NoEventsView />
+        }
       </View>
+      <TouchableOpacity 
+        onPress={() => router.push('/addevents')}
+        className="flex justify-center aspect-square items-center p-5 shadow-md bg-blue rounded-full absolute right-6 bottom-6">
+        <FontAwesome6 name="add" size={24} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

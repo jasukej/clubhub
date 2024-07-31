@@ -52,6 +52,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       setLoading(false);
     };
 
+    // fetchUserFromStore();
+
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
         const userRef = doc(db, "users", authUser.uid);
@@ -138,9 +140,26 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     }
   };
 
+  /**
+   * function to pull from db when needed
+   */
+  const refreshUser = async () => {
+    if (user && user.uid) {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUser({ ...user, ...userDoc.data() });
+        }
+      } catch (error) {
+        console.error("Error refreshing user:", error);
+      }
+    }
+  };
+
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
-      <UserContext.Provider value={{ user, loading, login, logout }}>
+      <UserContext.Provider value={{ user, loading, login, logout, refreshUser }}>
         <Provider store={store}>
           <View style={{ flex: 1 }}>
             <Slot />

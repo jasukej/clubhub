@@ -1,17 +1,19 @@
 import { View, Text, Image, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import HeartButton from "./HeartButton";
 import formatEventTime from "@/utils/formatCardEventTime";
 import { db } from "@/config/firebase";
-import { collection, doc, getDoc } from "firebase/firestore/lite";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, updateDoc } from "firebase/firestore/lite";
+import { AntDesign } from "@expo/vector-icons";
 
 interface EventCardProps {
   event: any;
   currentUser?: any;
+  refresh: () => void;
   onPress: (event: EventObj) => void;
 }
 
-const EventCard = ({ event, currentUser, onPress }: EventCardProps) => {
+const EventCard = ({ event, currentUser, refresh, onPress }: EventCardProps) => {
   const {
     name,
     applicationNeeded,
@@ -55,6 +57,41 @@ const EventCard = ({ event, currentUser, onPress }: EventCardProps) => {
 
   const [org, setOrg] = useState<any>(null);
 
+  const [hasFavourited, setHasFavourited] = useState(false);
+  console.log(hasFavourited);
+
+  useEffect(() => {
+    if (currentUser) {
+      setHasFavourited(currentUser.favoritedIds.includes(event.id));
+    }
+  }, [event, currentUser]);
+
+  const toggleFavourite = useCallback(async () => {
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, "users", currentUser.uid);
+
+        if (hasFavourited) {
+          // Remove from favorites
+          await updateDoc(userDocRef, {
+            favoritedIds: arrayRemove(event.id),
+          });
+        } else {
+          // Add to favorites
+          await updateDoc(userDocRef, {
+            favoritedIds: arrayUnion(event.id),
+          });
+        }
+
+        setHasFavourited((prev) => !prev);
+        refresh();
+        console.log("user info changed", currentUser);
+      } catch (error) {
+        console.error("Error toggling favorite status:", error);
+      }
+    }
+  }, [event.id, currentUser, hasFavourited]);
+
   return (
     <View
       className="
@@ -70,11 +107,29 @@ const EventCard = ({ event, currentUser, onPress }: EventCardProps) => {
     >
       <View
         className="
+        absolute
         top-4
-        left-8
+        right-4
       "
       >
-        <HeartButton eventId={event.id} currentUser={currentUser} />
+        <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              console.log('pressed');
+              toggleFavourite();
+            }}
+            hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }} // increase press radius
+            className="
+              text-blue
+              active:opacity-80
+            "
+          >
+            {hasFavourited ? (
+            <AntDesign name="heart" color={"#273AA0"} size={22} />
+          ) : (
+            <AntDesign name="hearto" size={22} color={"#3954E4"} />
+          )}
+        </Pressable>
       </View>
       <View
         className="

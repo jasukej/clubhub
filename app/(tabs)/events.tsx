@@ -11,6 +11,8 @@ import { db } from "@/config/firebase";
 import { useUser } from "@/context/UserContext";
 import EventCard from "@/components/event/EventCard";
 import EventScreen from "@/components/event/EventScreen";
+import NoEventsView from "@/components/event/NoEventsView";
+import SearchBar from "@/components/homepage/SearchBar";
 
 interface EventObj {
   id: string;
@@ -33,9 +35,10 @@ interface EventObj {
 }
 
 const Events = () => {
-  const { user, loading } = useUser();
+  const { user, loading, refreshUser } = useUser();
   const [registered, setRegisteredEvents] = useState<EventObj[]>();
-  const [favorited, setFavoritedEvents] = useState<EventObj[]>();
+  const [favorited, setFavoritedEvents] = useState<EventObj[]|null>();
+  const [searchQuery, setSearchQuery] = useState("");
   const [viewing, setViewing] = useState("registered");
   const [selectedEvent, setSelectedEvent] = useState<EventObj | null>(null);
 
@@ -70,6 +73,7 @@ const Events = () => {
             collection(db, "events"),
             where("__name__", "in", user.favoritedIds)
           );
+          console.log("favourited event ids:", user.favoritedIds)
 
           const snapshot = await getDocs(q);
           const favoritedEvents = snapshot.docs.map((doc) => {
@@ -82,6 +86,8 @@ const Events = () => {
             } as EventObj;
           });
           setFavoritedEvents(favoritedEvents);
+        } else {
+          setFavoritedEvents(null);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -112,38 +118,47 @@ const Events = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 pt-4 px-6">
-        <View className="flex-row flex justify-between">
-          <Text className="text-2xl font-bold mb-4">Events</Text>
+      <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        <View className="flex-row flex justify-between mt-4">
+          <Text className="text-2xl font-bold mb-4">my events</Text>
           <View className="flex-row max-h-9">
             <TouchableOpacity
-              className={`px-3 py-2 flex items-center rounded ${
+              className={`px-3 py-2 flex items-center rounded-lg ${
                 viewing === "registered" ? "bg-blue" : "bg-gray-300"
               }`}
               onPress={() => setViewing("registered")}
             >
-              <Text className="text-white">Registered</Text>
+              <Text className="text-white">registered</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className={`px-3 py-2 ml-2 flex items-center rounded ${
+              className={`px-3 py-2 ml-2 flex items-center rounded-lg ${
                 viewing === "favorited" ? "bg-blue" : "bg-gray-300"
               }`}
               onPress={() => setViewing("favorited")}
             >
-              <Text className="text-white">Favorited</Text>
+              <Text className="text-white">favorited</Text>
             </TouchableOpacity>
           </View>
         </View>
+        {favorited ?
         <FlatList
           data={viewing === "favorited" ? favorited : registered}
           renderItem={({ item }) => (
             <EventCard
               currentUser={user}
               event={item}
+              refresh={refreshUser}
               onPress={() => onEventPress(item)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 100 }}
-        />
+        /> : 
+        <View className="flex items-center min-h-[70vh]">
+          <NoEventsView />
+        </View>}
         <TouchableOpacity
           className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full mt-4"
           onPress={() => {}}

@@ -20,6 +20,7 @@ export interface UserContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const defaultContext: UserContextType = {
@@ -27,6 +28,7 @@ const defaultContext: UserContextType = {
   loading: true,
   login: async () => {},
   logout: async () => {},
+  refreshUser: async () => {},
 };
 
 export const UserContext = createContext<UserContextType>(defaultContext);
