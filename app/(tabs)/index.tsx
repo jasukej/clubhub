@@ -21,7 +21,7 @@ import {
 import { db } from "@/config/firebase";
 import FilterBar from "@/components/homepage/FilterBar";
 import EventCard from "@/components/event/EventCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import LocationBar from "@/components/homepage/LocationBar";
 import SearchBar from "@/components/homepage/SearchBar";
 import { useUser } from "@/context/UserContext";
@@ -31,7 +31,9 @@ import Button from "@/components/Button";
 import { format } from "date-fns";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import NoEventsView from "@/components/event/NoEventsView";
-import { router } from "expo-router";
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
+import AddEventForm from "@/components/event/AddEventForm";
 
 interface Event {
   id: string;
@@ -145,6 +147,19 @@ export default function HomeScreen() {
     return <EventScreen event={selectedEvent} onBack={onBackPress} />;
   }
 
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['90%', '60%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
   return (
     <SafeAreaView
       className="
@@ -211,10 +226,32 @@ export default function HomeScreen() {
         }
       </View>
       <TouchableOpacity 
-        onPress={() => router.push('/addevents')}
+        onPress={handlePresentModalPress}
         className="flex justify-center aspect-square items-center p-5 shadow-md bg-blue rounded-full absolute right-6 bottom-6">
         <FontAwesome6 name="add" size={24} color="white" />
       </TouchableOpacity>
+
+      {/* Modal Component */}
+      <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={1}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+            maxDynamicContentSize={100}
+            keyboardBehavior="interactive"
+            backgroundStyle={{
+              borderTopWidth: 1,
+              borderTopColor: 'grey',
+            }}
+          >
+          <BottomSheetView>
+            <View className="flex flex-col px-6 py-2">
+            <Text className="font-bold text-xl mb-2">Create an event </Text>
+            {/* Create events form */}
+            <AddEventForm />
+            </View>
+          </BottomSheetView>
+        </BottomSheetModal>
     </SafeAreaView>
   );
 }

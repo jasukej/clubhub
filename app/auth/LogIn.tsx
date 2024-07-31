@@ -90,7 +90,7 @@ const LogIn = () => {
     >
       <View
         className="
-        flex-1 
+        flex-1
         justify-center 
         items-center 
         bg-white p-4"

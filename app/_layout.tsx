@@ -22,6 +22,8 @@ import * as SecureStore from "expo-secure-store";
 import { useRootNavigationState, Redirect } from "expo-router";
 import { TamaguiProvider } from "tamagui";
 import { tamaguiConfig } from "../tamagui.config";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -158,6 +160,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   };
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+    <BottomSheetModalProvider>
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
       <UserContext.Provider value={{ user, loading, login, logout, refreshUser }}>
         <Provider store={store}>
@@ -167,5 +171,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </Provider>
       </UserContext.Provider>
     </TamaguiProvider>
+    </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
