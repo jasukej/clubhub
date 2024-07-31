@@ -10,15 +10,18 @@ import {
 import React, { useEffect, useState } from "react";
 import formatEventTime from "@/utils/formatCardEventTime";
 import { db } from "@/config/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore/lite";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useUser } from "@/context/UserContext";
+import RegisterButton from "./RegisterButton";
 
 interface EventScreenProps {
   event: any;
+  currentUser?: any;
   onBack: () => void;
 }
 
-const EventScreen = ({ event, onBack }: EventScreenProps) => {
+const EventScreen = ({ event, currentUser, onBack }: EventScreenProps) => {
+  const { user } = useUser();
   const { name, description, startTime, endTime, venue, type, field, media } =
     event;
 
@@ -69,6 +72,7 @@ const EventScreen = ({ event, onBack }: EventScreenProps) => {
             </Text>
             <Text style={{ color: "blue", flex: 1 }}>{venue}</Text>
           </View>
+          <RegisterButton eventId={event.id} currentUser={user} />
         </View>
       </ScrollView>
     </View>

@@ -1,8 +1,19 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { auth, db } from '../config/firebase'
-import { onAuthStateChanged, User as FirebaseUser, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import * as SecureStore from 'expo-secure-store';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { auth, db } from "../config/firebase";
+import {
+  onAuthStateChanged,
+  User as FirebaseUser,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import * as SecureStore from "expo-secure-store";
 
 export interface UserContextType {
   user: User | null;
@@ -23,7 +34,7 @@ export const UserContext = createContext<UserContextType>(defaultContext);
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };

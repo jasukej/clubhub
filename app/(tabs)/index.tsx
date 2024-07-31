@@ -8,8 +8,6 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import {
   collection,
   doc,
@@ -57,6 +55,8 @@ export default function HomeScreen() {
   console.log(events);
 
   useEffect(() => {
+    console.log("HomeScreen currentUser:", user);
+
     const fetchEvents = async () => {
       let q;
       if (searchQuery) {
@@ -100,16 +100,16 @@ export default function HomeScreen() {
     fetchEvents();
   }, [searchQuery]);
 
-  const handleEventPress = (event: EventObj) => {
+  const onEventPress = (event: EventObj) => {
     setSelectedEvent(event);
   };
 
-  const handleBackPress = () => {
+  const onBackPress = () => {
     setSelectedEvent(null);
   };
 
   if (selectedEvent) {
-    return <EventScreen event={selectedEvent} onBack={handleBackPress} />;
+    return <EventScreen event={selectedEvent} onBack={onBackPress} />;
   }
 
   return (
@@ -148,7 +148,7 @@ export default function HomeScreen() {
             <EventCard
               currentUser={user}
               event={item}
-              onPress={() => handleEventPress(item)}
+              onPress={() => onEventPress(item)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 100 }}

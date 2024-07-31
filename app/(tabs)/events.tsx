@@ -40,6 +40,8 @@ const Events = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventObj | null>(null);
 
   useEffect(() => {
+    console.log("EventScreen currentUser:", user);
+
     if (!user) return;
 
     const fetchEvents = async () => {
@@ -89,16 +91,22 @@ const Events = () => {
     fetchEvents();
   }, [user, loading]);
 
-  const handleEventPress = (event: EventObj) => {
+  const onEventPress = (event: EventObj) => {
     setSelectedEvent(event);
   };
 
-  const handleBackPress = () => {
+  const onBackPress = () => {
     setSelectedEvent(null);
   };
 
   if (selectedEvent) {
-    return <EventScreen event={selectedEvent} onBack={handleBackPress} />;
+    return (
+      <EventScreen
+        event={selectedEvent}
+        currentUser={user}
+        onBack={onBackPress}
+      />
+    );
   }
 
   return (
@@ -131,7 +139,7 @@ const Events = () => {
             <EventCard
               currentUser={user}
               event={item}
-              onPress={() => handleEventPress(item)}
+              onPress={() => onEventPress(item)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 100 }}

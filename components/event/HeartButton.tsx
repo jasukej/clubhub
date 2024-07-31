@@ -20,7 +20,7 @@ const HeartButton = ({ eventId, currentUser }: HeartButtonProps) => {
   console.log(hasFavourited);
 
   useEffect(() => {
-    if (currentUser && currentUser.favoritedIds) {
+    if (currentUser) {
       setHasFavourited(currentUser.favoritedIds.includes(eventId));
     }
   }, [eventId, currentUser]);

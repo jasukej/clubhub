@@ -15,13 +15,13 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { View } from "react-native";
 import { auth, db } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore/lite";
-import { Provider } from 'react-redux';
+import { Provider } from "react-redux";
 import { UserContext, UserContextType } from "@/context/UserContext";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import * as SecureStore from 'expo-secure-store';
-import { useRootNavigationState, Redirect } from 'expo-router';
-import { TamaguiProvider } from 'tamagui'
-import { tamaguiConfig } from '../tamagui.config'
+import * as SecureStore from "expo-secure-store";
+import { useRootNavigationState, Redirect } from "expo-router";
+import { TamaguiProvider } from "tamagui";
+import { tamaguiConfig } from "../tamagui.config";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,54 +42,48 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   }, [loaded]);
 
   useEffect(() => {
-
     const fetchUserFromStore = async () => {
-      const storedUser = await SecureStore.getItemAsync('user');
+      const storedUser = await SecureStore.getItemAsync("user");
       console.log("stored user is ", storedUser);
       if (storedUser) {
         setUser(JSON.parse(storedUser));
-        router.replace('/(tabs)');
+        router.replace("/(tabs)");
       }
       setLoading(false);
-    }
+    };
 
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        const userRef = doc(db, 'users', authUser.uid);
+        const userRef = doc(db, "users", authUser.uid);
         const userDoc = await getDoc(userRef);
 
         if (userDoc.exists()) {
           // if exists, check that the necessary fields exist to redirect to tabs view
           const userData = userDoc.data() as User;
           console.log(userData);
-          const requiredFields = [
-            'fullName', 
-            'username', 
-            'year', 
-            'program'
-          ];
+          const requiredFields = ["fullName", "username", "year", "program"];
 
-          const isValid = requiredFields.every(field => {
+          const isValid = requiredFields.every((field) => {
             //@ts-ignore
-            return userData[field].trim() !== '';
+            return userData[field].trim() !== "";
           });
 
-          console.log(isValid)
+          console.log(isValid);
 
           if (isValid) {
             setUser({ ...userData });
-            await SecureStore.setItemAsync('user', JSON.stringify(userData));
-            router.replace('/(tabs)');
+            await SecureStore.setItemAsync("user", JSON.stringify(userData));
+            router.replace("/(tabs)");
           } else {
-            router.replace('/onboarding/Step1');
+            router.replace("/onboarding/Step1");
           }
         } else {
-          router.replace('/onboarding/Step1');
+          router.replace("/onboarding/Step1");
         }
       } else {
         setUser(null);
-        await SecureStore.deleteItemAsync('user');
-        router.replace('/onboarding/Step1');
+        await SecureStore.deleteItemAsync("user");
+        router.replace("/onboarding/Step1");
       }
     });
 
@@ -102,27 +96,33 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   /**
    * simple login function
-   * @param email user email 
+   * @param email user email
    * @param password user password (unencrypted)
    */
   const login = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const authUser = userCredential.user;
-      const userRef = doc(db, 'users', authUser.uid);
+      const userRef = doc(db, "users", authUser.uid);
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
-        const userData = userDoc.data() as UserContextType['user'];
+        const userData = userDoc.data() as UserContextType["user"];
         setUser(userData);
-        await SecureStore.setItemAsync('user', JSON.stringify({ uid: authUser.uid, ...userData }));
-        router.replace('/(tabs)');
+        await SecureStore.setItemAsync(
+          "user",
+          JSON.stringify({ uid: authUser.uid, ...userData })
+        );
+        router.replace("/(tabs)");
       }
-
     } catch (error) {
-      console.log('Unable to log in: ', error);
+      console.log("Unable to log in: ", error);
     }
-  }
+  };
 
   /**
    * simple function to log user out
@@ -131,21 +131,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     try {
       await signOut(auth);
       setUser(null);
-      await SecureStore.deleteItemAsync('user');
-      router.replace('/auth');
+      await SecureStore.deleteItemAsync("user");
+      router.replace("/auth");
     } catch (error) {
-      console.error('Unable to log out.', error);
+      console.error("Unable to log out.", error);
     }
   };
 
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
-      <UserContext.Provider value = {{ user, loading, login, logout}}>
-      <Provider store={store}>
-        <View style={{ flex: 1 }}>
-          <Slot />
-        </View>
-      </Provider>
+      <UserContext.Provider value={{ user, loading, login, logout }}>
+        <Provider store={store}>
+          <View style={{ flex: 1 }}>
+            <Slot />
+          </View>
+        </Provider>
       </UserContext.Provider>
     </TamaguiProvider>
   );
