@@ -135,7 +135,7 @@ const EventCard = ({ event, currentUser, refresh, onPress }: EventCardProps) => 
         className="
         flex
         flex-row
-        gap-x-2
+        gap-x-4
       "
       >
         <View>

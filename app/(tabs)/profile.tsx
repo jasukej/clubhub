@@ -95,16 +95,16 @@ const Profile = () => {
             <Text className="text-2xl font-bold">recent activity</Text>
             {/* Filler activity items */}
             <View className="mt-2">
-              <Text>Lilian added feedback to Intro to SQL</Text>
+              <Text>Janice added feedback to Intro to SQL</Text>
               <Text className="text-sm text-gray-500">
                 Great, comprehensive workshop! The exercises were far too hard for beginners though.
               </Text>
             </View>
             <View className="mt-2">
-              <Text>Lilian attended Intro to SQL</Text>
+              <Text>Janice attended Intro to SQL</Text>
             </View>
             <View className="mt-2">
-              <Text>Lilian is going to ProduHacks 2024</Text>
+              <Text>Janice is going to ProduHacks 2024</Text>
             </View>
           </View>
         </View>

@@ -4,7 +4,7 @@ interface InterestsInputProps {
 }
 
 const interestsArray = [
-    'frats', 'networking', 'career', 'study session', 'sports', 
+    'frats', 'networking', 'career', 'study', 'sports', 
     'anime', 'conference', 'ai/ml', 'research', 'cooking', 
     'hackathons', 'business'
 ];
@@ -26,7 +26,9 @@ const InterestsInput = ({ selectedInterests, onChange }:InterestsInputProps) => 
     <View 
     className="
         flex
+        flex-row
         flex-wrap
+        max-w-[100vw]
         gap-4
         max-h-[20vh]
         overflow-y-hidden

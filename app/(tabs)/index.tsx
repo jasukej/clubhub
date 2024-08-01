@@ -150,7 +150,7 @@ export default function HomeScreen() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ['90%', '60%'], []);
+  const snapPoints = useMemo(() => ['95%', '95%'], []);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -248,7 +248,10 @@ export default function HomeScreen() {
             <View className="flex flex-col px-6 py-2">
             <Text className="font-bold text-xl mb-2">Create an event </Text>
             {/* Create events form */}
-            <AddEventForm />
+            
+            <AddEventForm 
+              //@ts-ignore
+              currentUser={user} />
             </View>
           </BottomSheetView>
         </BottomSheetModal>

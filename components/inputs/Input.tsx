@@ -10,6 +10,7 @@ interface InputProps {
     secureTextEntry?: boolean;
     rules?: object;
     errors: any;
+    side?: boolean;
 }
 
 const Input = ({
@@ -20,15 +21,16 @@ const Input = ({
     secureTextEntry,
     rules,
     errors,
+    side,
 }:InputProps) => {
   return (
-    <View className="
+    <View className={`
         w-full
         mt-4
         flex-start
         flex
-        flex-col
-    ">
+        ${side ? "flex-row justify-between items-center" : "flex-col"}
+    `}>
         <Text className="
             text-sm
             font-medium
@@ -42,7 +44,7 @@ const Input = ({
             rules={rules}
             render={({field: {onBlur, onChange, value}}) => (
                 <TextInput 
-                    className="border rounded-md p-2 w-full"
+                    className={`border rounded-md p-2 ${side ? "w-[55vw]" : "w-full"}`}
                     placeholder={placeholder ? placeholder : ''}
                     onBlur={onBlur}
                     value={value}
@@ -51,7 +53,7 @@ const Input = ({
                 />
             )}
         />
-        {errors[name] && <Text className="text-red-500">{errors[name]?.message}</Text>}
+        {errors[name] && <Text className="text-red">{errors[name]?.message}</Text>}
     </View>
   )
 }
